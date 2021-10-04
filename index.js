@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 
 const takePhoto = async ({ url = "https://www.google.com/" } = {}) => {
   console.log(url)
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
   const page = await browser.newPage();
   await page.setViewport({ width: 1366, height: 768});
   await page.goto(url, { waitUntil: 'load', timeout: 0 });
