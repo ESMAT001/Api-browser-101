@@ -9,7 +9,7 @@
     "puppeteer": "^10.4.0"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "node app.js",
     "dev": "nodemon app.js"
   }
 }
