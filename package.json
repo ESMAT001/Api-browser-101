@@ -6,6 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
+    "got": "^11.8.2",
     "puppeteer": "^10.4.0"
   },
   "scripts": {

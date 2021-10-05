@@ -1,7 +1,7 @@
 const app = require('express')();
 const takePhoto = require('./index.js');
 
-port = process.env.PORT || 80
+port = process.env.PORT || 3000
 
 
 app.get('/', async (req, res, next) => {
