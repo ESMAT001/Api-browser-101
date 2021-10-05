@@ -47,8 +47,9 @@ const takePhoto = async ({ url = "https://www.google.com/", wait = null, load = 
   const page = await browser.newPage();
   await page.setViewport({ width: 1366, height: 768 });
 
-  const location = await getRandomGeolocation();
-  await page.setGeolocation(location);
+  // const location = await getRandomGeolocation();
+  // await page.setGeolocation(location);
+  
   await page.goto(url, { waitUntil: getLoadMethod(load), timeout: 0 });
 
   if (wait) {
