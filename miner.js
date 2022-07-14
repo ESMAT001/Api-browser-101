@@ -1,10 +1,10 @@
-const puppeteer = require('puppeteer');
-const got = require('got');
+import { getNewPage } from './browser.js';
+// const got = require('got');
 
 async function miner(url, count = 50) {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1366, height: 768 });
+    
+    const page = await getNewPage()
+
     for (let index = 0; index < count; index++) {
         // await got(url);
         await page.goto(url, { waitUntil: "networkidle2", timeout: 0 });
@@ -27,4 +27,4 @@ async function miner(url, count = 50) {
 
 
 
-module.exports = miner;
+export default miner;

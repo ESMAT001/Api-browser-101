@@ -1,8 +1,14 @@
-const app = require('express')();
-const takePhoto = require('./index.js');
-const miner = require('./miner.js');
+import express from 'express'
+const app = express();
+import fs from 'fs'
+import path from 'path'
 
-port = process.env.PORT || 3000
+import takePhoto from './index.js';
+
+import miner from './miner.js';
+
+
+const port = process.env.PORT || 3000
 
 const rebuildUrl = (query) => {
     let url = ""
@@ -34,18 +40,48 @@ app.get("/test", async (req, res, next) => {
 
 
 app.get('/', async (req, res, next) => {
-    await takePhoto(rebuildUrl(req.query));
-    const fileName = 'example1.png';
-    const options = {
-        root: __dirname
+    const query = rebuildUrl(req.query)
+    let {url, fromcache, save} = query
+
+    if(fromcache === 'false') {
+        fromcache = false
+    } else {
+        fromcache = true;
     }
-    res.sendFile(fileName, options, function (err) {
-        if (err) {
-            next(err)
-        } else {
-            console.log('Sent:', fileName)
-        }
-    })
+    if(save === 'false') {
+        save = false
+    } else {
+        save = true
+    }
+
+
+    const filename = `${url.replace(/\//g, '__')}.png`
+
+    const files = fs.readdirSync('./images');
+
+    if(fromcache && files.includes(filename)) {
+        res.sendFile(path.resolve(`./images/${filename}`));
+        return;
+    }
+
+    const image = await takePhoto(query);
+
+    if(save) {
+        fs.writeFileSync(`./images/${filename}`, image)
+    }
+
+    res.end(image)
+    
+    // const options = {
+    //     root: __dirname
+    // }
+    // res.sendFile(fileName, options, function (err) {
+    //     if (err) {
+    //         next(err)
+    //     } else {
+    //         console.log('Sent:', fileName)
+    //     }
+    // })
     // res.send('Hello World!');
 })
 

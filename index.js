@@ -1,5 +1,6 @@
-const puppeteer = require('puppeteer');
-const got = require('got');
+import { getNewPage, screenshot } from './browser.js'
+
+import got from 'got';
 
 async function getRandomGeolocation() {
   const {
@@ -12,18 +13,9 @@ async function getRandomGeolocation() {
 }
 
 function sleep(sleepDuration) {
-  const now = new Date();
-  let prevSec = now.getSeconds();
-  let secCounter = 0;
-  while (new Date().getTime() < now.getTime() + sleepDuration) {
-
-    if (prevSec < new Date().getSeconds()) {
-      secCounter++
-      console.log(`${secCounter}sec`)
-      prevSec = new Date().getSeconds();
-    }
-
-  }
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), sleepDuration * 1000)
+  })
 }
 
 const getLoadMethod = load => {
@@ -41,24 +33,15 @@ const getLoadMethod = load => {
 }
 
 
-const takePhoto = async ({ url = "https://www.google.com/", wait = null, load = 1 } = {}) => {
+export default async function getPhoto({ url = "https://www.google.com/", wait = 0, load = 1 } = {}) {
   console.log(url)
-  const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-  const page = await browser.newPage();
-  await page.setViewport({ width: 1366, height: 768 });
+  
+  const page = await getNewPage(url, {waitUntil: getLoadMethod(load), timeout: 0})
 
-  // const location = await getRandomGeolocation();
-  // await page.setGeolocation(location);
-  await page.goto(url, { waitUntil: getLoadMethod(load), timeout: 0 });
+  console.log(`waiting ${wait}sec`);
+  await sleep(wait);
+  
 
-  if (wait) {
-    wait = parseInt(wait);
-    console.log(`waiting for ${wait}sec`)
-    sleep(wait * 1000);
-    console.log('after wait')
-  }
-
-  await page.screenshot({ path: 'example1.png' });
-  await browser.close();
+  const image = await screenshot(page);
+  return image
 }
-module.exports = takePhoto;
